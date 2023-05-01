@@ -54,7 +54,7 @@ class DirectorSkipList {
 
         // Destructor that deletes all nodes in the skip list (but not the MovieNodes, which are shared with other data structures)
         ~DirectorSkipList();
-
+        int generateRandomLevel();
         // Inserts a movie node into the skip list with the specified director
         void insert(string director, MovieNode* _movie);
 
@@ -63,6 +63,8 @@ class DirectorSkipList {
 
         // Pretty-prints the skip list
         void prettyPrint();
+
+        void setSize(int input);
 };
 
 #endif // __DIRECTOR_SKIP_LIST_HPP__

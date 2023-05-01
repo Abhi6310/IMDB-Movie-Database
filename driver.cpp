@@ -16,7 +16,100 @@ void display_menu();
 // Main function
 int main(int argc, char* argv[]) {
     // TODO
+    //Command Line arguments conditional
+    if(argc!= 4){
+        cout << "Invalid number of arguments.\nUsage: ./<program name> <csv file> <hashTable size> <skipList size>" << endl;
+        return 0;
+    }
+    //Create HashTables and Skiplists
+    string filename = argv[1];
+    int listSize = stoi(argv[2]);
+    int hashSize = stoi(argv[3]);
+    DirectorSkipList skipList(listSize, DEFAULT_LEVELS);
+    // skipList.setSize(listSize);
+    MovieHashTable hashTable(hashSize);
+    
+    
+    
 
+    //read csv
+    //I have commented this function because during compilation as the csv file is being read and parsed, the program runs into a seg fault and fails. Without this, the menu runs as expected, however it sometimes infinite loops.
+    // readMovieCSV(filename,hashTable,skipList);
+    //Menu
+    bool running = true;
+    int choice;
+    while(running){
+        cout << "Number of collisions: " << hashTable.getCollisions()<< endl;
+        display_menu();
+        cin >> choice;
+        MovieNode* movie;
+        string name;
+        string directorName;
+        DirectorSLNode* director;
+        switch(choice){
+            case 1:{//Find director of Movie
+                
+                cout << "Enter movie name: ";
+                cin >> name;
+                
+                movie = hashTable.search(name);
+                if(movie){
+                    cout << "The director of " << movie->title << " is " << movie->director << endl; 
+                } else {
+                    cout << "Director not found" << endl;
+                }
+            }
+            break;
+            case 2:{ //Find number of movies by a director
+                cout << "Enter director name: ";
+                cin >> directorName;
+                
+                director = skipList.search(directorName);
+                if(director){
+                    cout << director->director << " directed " << director->movies.size() << " movies." << endl;
+                } else {
+                    cout << "Director not found" << endl;
+                }
+            }
+            break;
+            case 3:{ //Find description of Movie
+                cout << "Enter movie name";
+                cin >> name;
+                
+                movie = hashTable.search(name);
+                if(movie){
+                    cout << movie->title << " 's Description: " << movie->description << endl;
+                } else {
+                    cout << "Movie not found." << endl;
+                }
+            }
+            break;
+            case 4:{ // List movies by director
+                cout << "Enter the director's name: ";
+                cin >> directorName;
+                
+                director = skipList.search(directorName);
+                if(director){
+                    cout << director->director << " directed the following movies:" << endl;
+                    for(size_t i = 0; i < director->movies.size(); ++i){
+                        cout << i << ": " << director->movies[i]->title << endl;
+                    } 
+                }else {
+                        cout << "Director not found" << endl;
+                    }
+            }
+            break;
+            case 5:{
+                //Call destructors
+                cout << "Quit" << endl;
+                running = false;
+            }
+            break;
+            default:{
+                cout << "Invalid choice. Please try again." << endl;
+            }
+        }
+    }
     return 0;
 }
 
@@ -73,9 +166,32 @@ MovieNode* parseMovieLine(string line) {
 // Function to read a CSV file into a vector of MovieNode objects
 void readMovieCSV(string filename,  MovieHashTable &movieTable, DirectorSkipList &directorList) {
     // TODO
+    ifstream file(filename);
+    if( !file.is_open()){
+        cout << "Error: Could not open file." << filename << endl;
+        return;
+    }
+    string line;
+    getline(file,line);
+    while(getline(file,line)){
+        MovieNode* movie = parseMovieLine(line);
+        if(movie){
+            movieTable.insert(movie->title,movie);
+            directorList.insert(movie->director,movie);
+        }
+    }
+    file.close();
 }
 
 // Function to display the menu options
 void display_menu() {
     // TODO
+        cout << "Please select an option:" << endl;
+        cout << "1. Find the director of a movie" << endl;
+        cout << "2. Find the number of movies by a director" << endl;
+        cout << "3. Find the description of a movie" << endl;
+        cout << "4. List the movies by a director" << endl;
+        cout << "5. Quit \n" << endl;
+        cout << "Enter an Option:" << endl;
+        
 }

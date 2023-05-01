@@ -28,3 +28,8 @@ for the given IMDB-Movie database to ensure efficient insertion and retrieval of
 ### Skip List
 The skip list is used to map director names to `DirectorSLNode` objects, which contain a vector of `MovieNode` pointers. The skip list is a probabilistic data structure that allows for efficient search, insertion, and deletion of elements. It is implemented using a linked list with multiple levels, where each level has fewer nodes than the level below it. The skip list used in this project has a fixed number of levels (10) and a fixed capacity (2000).
 
+README UPDATE:
+1) I decided to use the hash collision method because it proved to be easier to incorporate with other data structures
+2)My hash function divides my identikey up into a 4 digit number and characters, It uses these to create a unique set of indexes where the Skip List is implemented
+3)I did implement a skiplist to search for director specific information
+4) I created a random number generating function to assist in creating my skip list
