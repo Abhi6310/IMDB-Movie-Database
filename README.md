@@ -5,20 +5,6 @@
 
 ---
 
-## Table of Contents
-
-- [Overview](#overview)  
-- [Features](#features)  
-- [Data Structures](#data-structures)  
-- [Prerequisites](#prerequisites)  
-- [Build & Run](#build--run)  
-- [Usage](#usage)  
-- [Directory Structure](#directory-structure)  
-- [Author](#author)  
-- [License](#license)  
-
----
-
 ## Overview
 
 This project parses an IMDB-style CSV of movie records into two data structures:
