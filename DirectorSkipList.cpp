@@ -1,99 +1,100 @@
 #include<iostream>
 #include <vector>
+#include <ctime>
+#include <cstdlib>
 #include "DirectorSkipList.hpp"
 using namespace std;
 
-// Constructor for DirectorSkipList with default capacity and levels
 DirectorSkipList::DirectorSkipList() {
-    // TODO
+    srand(time(0));
     capacity = DEFAULT_CAPACITY;
+    levels = DEFAULT_LEVELS;
+    size = 0;
+    head = new DirectorSLNode("", levels);
 }
 
-// Constructor for DirectorSkipList with given capacity and levels
 DirectorSkipList::DirectorSkipList(int _cap, int _levels) {
-    // TODO
     srand(time(0));
     capacity = _cap;
     levels = _levels;
+    size = 0;
+    head = new DirectorSLNode("", levels);
 }
 
-// Destructor for DirectorSkipList that deletes all nodes in the skip list (but not the MovieNodes, which are shared with other data structures)
 DirectorSkipList::~DirectorSkipList() {
-    // TODO
-    DirectorSLNode* current = head->next[0];
-    while(current){
+    if (!head) {
+        return;
+    }
+    DirectorSLNode* current = head;
+    while(current) {
         DirectorSLNode* nextNode = current->next[0];
-        current->next.clear();
+        delete current;
         current = nextNode;
     }
-    head->next.clear();
 }
-//This function generates a random integer that is less than the total amount of levels and returns it back to the function to use in adding to the skip list
+
 int DirectorSkipList::generateRandomLevel(){
     int lvl = 1;
-    while ((rand()%2) && (lvl < levels)){
+    while ((rand() % 2) && (lvl < levels)){
         lvl++;
     }
     return lvl;
 }
-// Inserts a movie node into the skip list with the specified director
-void DirectorSkipList::insert(string director, MovieNode* _movie) {
-    // TODO
-    //Determine Levels
-    int n_levels = generateRandomLevel();
-    //Create new node
-    DirectorSLNode* newNode = new DirectorSLNode(director, n_levels);
-    newNode->movies.push_back(_movie);
 
-    //Keep track of previous pointers
-    vector <DirectorSLNode*> prevNode(levels,nullptr);
+void DirectorSkipList::insert(string director, MovieNode* _movie) {
+    vector<DirectorSLNode*> prevNode(levels, nullptr);
     DirectorSLNode* current = head;
+    
     for (int i = levels - 1; i >= 0; i--) {
-        // Move forward in the current level until the next node's director is greater than the given director
         while (current->next[i] && current->next[i]->director < director) {
             current = current->next[i];
         }
-        // Remember the previous pointer at the current level
         prevNode[i] = current;
     }
-    // current = current->next[0];
-    // if(current != nullptr && current->director == director){
-    //     current->movies.push_back(_movie);
-    // } else {
-    //Insert new node
-    for (int i = 0; i < n_levels; i++) {
-        newNode->next[i] = prevNode[i]->next[i];
-        prevNode[i]->next[i] = newNode;
-    // }
+    
+    current = current->next[0];
+    if(current != nullptr && current->director == director) {
+        if (current->addMovie(_movie)) {
+        }
+    } else {
+        int n_levels = generateRandomLevel();
+        DirectorSLNode* newNode = new DirectorSLNode(director, n_levels);
+        newNode->movies.push_back(_movie);
+        for (int i = 0; i < n_levels; i++) {
+            newNode->next[i] = prevNode[i]->next[i];
+            prevNode[i]->next[i] = newNode;
+        }
+        size++;
     }
 }
 
-// Searches for a node in the skip list with the specified director
-DirectorSLNode *DirectorSkipList::search(string director) {
-    // TODO
+DirectorSLNode* DirectorSkipList::search(string director) {
+    if (!head) return nullptr;
+    
     DirectorSLNode* current = head;
-    for(int i = levels - 1; i >= 0;i--){
-        while(current->next[i] && current->next[i]->director < director){
+    for(int i = levels - 1; i >= 0; i--) {
+        while(current->next[i] && current->next[i]->director < director) {
             current = current->next[i]; 
         }
     }
-    current= current->next[0];
-    if(current && current->director == director){
+    current = current->next[0];
+    if(current && current->director == director) {
         return current;
     }
     return nullptr;
 }
 
-// Pretty-prints the skip list
 void DirectorSkipList::prettyPrint() {
-    // TODO
-    for(int i = levels - 1; i >= 0;i--){
+    if (!head) {
+        cout << "Skip list is empty or uninitialized" << endl;
+        return;
+    }
+    for(int i = levels - 1; i >= 0; i--) {
         DirectorSLNode* current = head->next[i];
         cout << "Level " << i << ": ";
-        
-        while(current){
+        while(current) {
             cout << current->director << " (" << current->movies.size() << " movies)";
-            if(current->next[i]){
+            if(current->next[i]) {
                 cout << " -> ";
             }
             current = current->next[i]; 
@@ -102,6 +103,6 @@ void DirectorSkipList::prettyPrint() {
     }
 }
 
-void DirectorSkipList::setSize(int input){
+void DirectorSkipList::setSize(int input) {
     size = input;
 }

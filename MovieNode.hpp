@@ -1,37 +1,38 @@
-#ifndef __MOVIE_NODE_HPP__ // include guard to prevent multiple inclusions of this 
+#ifndef __MOVIE_NODE_HPP__
 #define __MOVIE_NODE_HPP__
 
-#include<iostream>
+#include <iostream>
+#include <string>
 using namespace std;
 
-// A struct representing a node for storing movie information
 struct MovieNode {
-    int rank;           // the movie's rank in the database
-    string title;       // the movie's title
-    string genre;       // the movie's genre
-    string description; // a brief description of the movie
-    string director;    // the name of the movie's director
-    string actors;      // the names of the movie's actors
-    int year;           // the year the movie was released
-    int runtime;        // the movie's runtime in minutes
-    float rating;       // the movie's average rating (out of 10)
-    int votes;          // the number of votes the movie has received
-    float revenue;      // the movie's total revenue in Millions
-    int metascore;      // the movie's metascore (out of 100)
+    int rank;
+    string title;
+    string genre;
+    string description;
+    string director;
+    string actors;
+    int year;
+    int runtime;
+    float rating;
+    int votes;
+    float revenue;
+    int metascore;
 
-    MovieNode* next;    // a pointer to the next node in the linked list
+    MovieNode* next;
 
-    // Default constructor (does nothing)
-    MovieNode() {}
+    MovieNode() : 
+        rank(0), title(""), genre(""), description(""), director(""), actors(""),
+        year(0), runtime(0), rating(0.0f), votes(0), revenue(0.0f), metascore(0),
+        next(nullptr) {}
 
-    // Constructor that initializes all fields of the node
     MovieNode(int _rank, string _title, string _genre, string _desc, 
-    string _dir, string _actors, int _year, int _runtime, float _rating, 
-    int _votes, float _revenue, int _metascore) {
+              string _dir, string _actors, int _year, int _runtime, float _rating, 
+              int _votes, float _revenue, int _metascore) {
         rank = _rank;
         title = _title;
         genre = _genre;
-        description =  _desc;
+        description = _desc;
         director = _dir;
         actors = _actors;
         year = _year;
@@ -40,10 +41,42 @@ struct MovieNode {
         votes = _votes;
         revenue = _revenue;
         metascore = _metascore;
-
-        next = nullptr; // initialize the next pointer to nullptr
+        next = nullptr;
     }
 
+    void displaySummary() const {
+        cout << "Title: " << title << " (" << year << ")" << endl;
+        cout << "Director: " << director << endl;
+        cout << "Rating: " << rating << "/10 (Votes: " << votes << ")" << endl;
+    }
+
+    void displayDetails() const {
+        displaySummary();
+        cout << "Genre: " << genre << endl;
+        cout << "Runtime: " << runtime << " minutes" << endl;
+        cout << "Actors: " << actors << endl;
+        cout << "Revenue: $" << revenue << "M" << endl;
+        cout << "Metascore: " << metascore << "/100" << endl;
+        cout << "Description: " << description << endl;
+    }
+
+    bool operator<(const MovieNode& other) const {
+        return rating < other.rating;
+    }
+
+    bool compareByTitle(const MovieNode& other) const {
+        return title < other.title;
+    }
+
+    bool compareByYear(const MovieNode& other) const {
+        return year < other.year;
+    }
 };
 
-#endif // __MOVIE_NODE_HPP__
+inline std::ostream& operator<<(std::ostream& os, const MovieNode& movie) {
+    os << movie.title << " (" << movie.year << "), Dir: " << movie.director 
+       << ", Rating: " << movie.rating;
+    return os;
+}
+
+#endif
