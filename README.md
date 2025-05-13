@@ -1,35 +1,55 @@
-<img src="https://www.colorado.edu/cs/profiles/express/themes/ucb/images/cu-boulder-logo-text-black.svg" alt="CU Boulder Logo" width="500">
+# IMDB Movie Database
 
-# CSCI 2270: Data Structures <br/> IMDB Movies Database Project
+> **A C++ in-memory movie database**  
+> Built with a hash table for title lookups and a skip list for director queries
 
-This project is a simple implementation of a movie database using C++ and two data structures: a hash table and a skip list. Please go through *CSCI2270_Spring23_Project.pdf* for the detailed instructions.
+---
 
-## Requirements
+## Overview
 
-1. C++ compiler 
-2. A CSV file containing movie data (e.g. IMDB-Movie-Data.csv)
+This project parses an IMDB-style CSV of movie records into two data structures:
 
-## Installation
+1. A **hash table** mapping movie titles → `MovieNode`  
+2. A **skip list** mapping director names → lists of `MovieNode`
 
-1. Clone the repository
-2. Compile the code : `g++ -std=c++11 driver.cpp MovieHashTable.cpp DirectorSkipList.cpp -o movie-db`
-3. Run the program: `./movie-db IMDB-Movie-Data.csv 2000 2000`
-4. Follow the on-screen menu to perform different operations on the movie database.
+It supports interactive queries by title or director.
+
+---
+
+## Features
+
+- **Load** movies from any CSV file (`IMDB-Movie-Data.csv`, `IMDB-small.csv`, etc.)  
+- **Lookup** the director of a given movie title  
+- **Count** how many movies a director has in the database  
+- **Fetch** a movie’s description by title  
+- **List** all movies by a specific director  
+- **Track** hash-table collision statistics  
+
+---
 
 ## Data Structures
 
-This project uses two data structures to store and retrieve movie data: a hash table and a skip list.
+- **Hash Table** (`MovieHashTable`)  
+  - Custom string hash function  
+  - Open addressing with collision counting  
+- **Skip List** (`DirectorSkipList`)  
+  - Multiple levels (configurable)  
+  - Fast ordered insert & search by director name  
 
-### Hash Table
-The hash table is used to map movie titles to `MovieNode` objects. 
-The hash function used is a custom function that takes the sum of the ASCII codes of all characters in the title string and calculates the modulo of the sum by the hash table size. Students must use their identikey to come up with a creative hash function that minimizes collisions
-for the given IMDB-Movie database to ensure efficient insertion and retrieval of movie nodes.
+---
 
-### Skip List
-The skip list is used to map director names to `DirectorSLNode` objects, which contain a vector of `MovieNode` pointers. The skip list is a probabilistic data structure that allows for efficient search, insertion, and deletion of elements. It is implemented using a linked list with multiple levels, where each level has fewer nodes than the level below it. The skip list used in this project has a fixed number of levels (10) and a fixed capacity (2000).
+## Prerequisites
 
-README UPDATE:
-1) I decided to use the hash collision method because it proved to be easier to incorporate with other data structures
-2)My hash function divides my identikey up into a 4 digit number and characters, It uses these to create a unique set of indexes where the Skip List is implemented
-3)I did implement a skiplist to search for director specific information
-4) I created a random number generating function to assist in creating my skip list
+- A C++ compiler with C++11 support (e.g. `g++`)  
+- A movie CSV file with columns: `Rank,Title,Genre,Description,Director,Actors,Year,Runtime,Rating,Votes,Revenue,Metascore`
+
+---
+
+## Build & Run
+
+1. **Clone** or unzip this repo  
+2. **Compile**:
+   ```bash
+   g++ -std=c++11 driver.cpp \
+       MovieHashTable.cpp DirectorSkipList.cpp \
+       -o movie-db
